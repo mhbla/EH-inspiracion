@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspiracion de Contenido</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f0f0; /* Light grey background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #333; /* Dark grey text */
+        }
+        .container {
+            background-color: #ffffff; /* White form background */
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+            border: 1px solid #e0e0e0; /* Light border */
+        }
+        h2 {
+            text-align: center;
+            color: #222; /* Even darker grey for heading */
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555; /* Medium grey label */
+            font-weight: 400;
+        }
+        input[type="text"],
+        input[type="url"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc; /* Medium grey border */
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+            color: #444;
+            background-color: #fdfdfd;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus,
+        input[type="url"]:focus,
+        textarea:focus {
+            border-color: #888; /* Darker grey on focus */
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #444; /* Dark grey button */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #666; /* Lighter grey on hover */
+        }
+        #responseMessage {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 700;
+            display: none; /* Hidden by default */
+        }
+        .success {
+            background-color: #e6ffe6; /* Very light green for success */
+            color: #1a7300; /* Dark green text */
+            border: 1px solid #8cff8c;
+        }
+        .error {
+            background-color: #ffe6e6; /* Very light red for error */
+            color: #cc0000; /* Dark red text */
+            border: 1px solid #ff8c8c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Inspiración de Contenido</h2>
+        <form id="contentInspirationForm">
+            <div class="form-group">
+                <label for="link">Enlace (URL)</label>
+                <input type="url" id="link" name="link" placeholder="Ej: https://ejemplo.com/articulo" required>
+            </div>
+            <div class="form-group">
+                <label for="title">Título</label>
+                <input type="text" id="title" name="title" placeholder="Ej: 5 ideas para tu próxima publicación" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Descripción Rápida</label>
+                <textarea id="description" name="description" placeholder="Ej: Un resumen breve de la idea o el contenido..." required></textarea>
+            </div>
+            <button type="submit">Enviar Inspiración</button>
+            <div id="responseMessage"></div>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('contentInspirationForm');
+        const responseMessage = document.getElementById('responseMessage');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Prevent default form submission
+
+            // Replace with your deployed Google Apps Script Web App URL
+            const GOOGLE_APPS_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE'; 
+
+            const formData = new FormData(form);
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+
+            // Show a loading message
+            responseMessage.style.display = 'block';
+            responseMessage.className = '';
+            responseMessage.textContent = 'Enviando...';
+
+            try {
+                const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Required for Google Apps Script as it doesn't send CORS headers
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams(data).toString(),
+                });
+
+                // Since we're using 'no-cors', we can't directly read the response status/body.
+                // We'll assume success for the fetch if no network error occurred.
+                // The actual success/failure will be handled by the Apps Script logging.
+                responseMessage.className = 'success';
+                responseMessage.textContent = '¡Inspiración enviada con éxito!';
+                form.reset(); // Clear the form
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                responseMessage.className = 'error';
+                responseMessage.textContent = 'Error al enviar la inspiración. Intenta de nuevo.';
+            } finally {
+                // Hide message after a few seconds
+                setTimeout(() => {
+                    responseMessage.style.display = 'none';
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>
