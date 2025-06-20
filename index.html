@@ -128,8 +128,7 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault(); // Prevent default form submission
 
-            // YOUR GOOGLE APPS SCRIPT WEB APP URL IS NOW INSERTED HERE:
-            const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzvF4sbU8oHKmwbnjpQEnuRZQXfCQEd1ca6WlC3aFRa6U51d0x9-MbBJ4UebjsfvUPT/exec'; 
+            const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxXzCTGPSwYE9z_ia_B_hB3-ZSS3YI7_zCgtNKTNtBCV1F2pcR7VRh0PQbthiypaVhU/exec'; 
 
             const formData = new FormData(form);
             const data = {};
@@ -137,31 +136,74 @@
                 data[key] = value;
             }
 
+            // Construct URL-encoded string for sending data
+            const queryString = new URLSearchParams(data).toString();
+
             // Show a loading message
             responseMessage.style.display = 'block';
             responseMessage.className = '';
             responseMessage.textContent = 'Enviando...';
 
             try {
-                const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors', // Required for Google Apps Script as it doesn't send CORS headers
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: new URLSearchParams(data).toString(),
-                });
+                // We're now directly using the form's target and action
+                // The 'action' attribute points to the Google Apps Script URL
+                // The 'method' attribute is 'POST'
+                // The Google Apps Script is designed to receive POST requests (doPost)
 
-                // Since we're using 'no-cors', we can't directly read the response status/body.
-                // We'll assume success for the fetch if no network error occurred.
-                // The actual success/failure will be handled by the Apps Script logging.
-                responseMessage.className = 'success';
-                responseMessage.textContent = '¡Inspiración enviada con éxito!';
-                form.reset(); // Clear the form
+                // Instead of fetch, we'll directly submit the form to bypass CORS issues for simple data submission
+                // A common pattern is to create a hidden iframe or dynamically set the form's target
+                // However, for direct submission, the simplest way is to let the form itself handle it.
+                // We will temporarily change the form's action and target to submit to the Apps Script.
+
+                const tempForm = document.createElement('form');
+                tempForm.method = 'POST';
+                tempForm.action = GOOGLE_APPS_SCRIPT_URL;
+                tempForm.target = 'hidden_iframe'; // Target a hidden iframe to prevent page refresh
+
+                // Append all form data as hidden inputs to the temporary form
+                for (const key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        const hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = key;
+                        hiddenInput.value = data[key];
+                        tempForm.appendChild(hiddenInput);
+                    }
+                }
+
+                document.body.appendChild(tempForm);
+
+                // Create a hidden iframe to catch the form submission response
+                let iframe = document.getElementById('hidden_iframe');
+                if (!iframe) {
+                    iframe = document.createElement('iframe');
+                    iframe.name = 'hidden_iframe';
+                    iframe.id = 'hidden_iframe';
+                    iframe.style.display = 'none';
+                    document.body.appendChild(iframe);
+                }
+
+                iframe.onload = function() {
+                    // This function runs when the iframe loads its content (after form submission)
+                    // Since the Apps Script returns plain text, we can consider the submission successful if no error occurs.
+                    responseMessage.className = 'success';
+                    responseMessage.textContent = '¡Inspiración enviada con éxito!';
+                    form.reset(); // Clear the form
+                    document.body.removeChild(tempForm); // Clean up the temporary form
+                    // No need to remove the iframe, it can be reused.
+                };
+
+                // Submit the temporary form
+                tempForm.submit();
+
             } catch (error) {
                 console.error('Error submitting form:', error);
                 responseMessage.className = 'error';
                 responseMessage.textContent = 'Error al enviar la inspiración. Intenta de nuevo.';
+                // Clean up in case of a JS error before submission
+                if (document.body.contains(tempForm)) {
+                    document.body.removeChild(tempForm);
+                }
             } finally {
                 // Hide message after a few seconds
                 setTimeout(() => {
