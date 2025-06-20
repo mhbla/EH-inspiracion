@@ -1,215 +1,428 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inspiracion de Contenido</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>Formulario de Evaluación de Contenido</title>
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f0f0f0; /* Light grey background */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+        * {
             margin: 0;
-            color: #333; /* Dark grey text */
-        }
-        .container {
-            background-color: #ffffff; /* White form background */
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-            width: 100%;
-            max-width: 500px;
+            padding: 0;
             box-sizing: border-box;
-            border: 1px solid #e0e0e0; /* Light border */
         }
-        h2 {
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f7fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-header {
             text-align: center;
-            color: #222; /* Even darker grey for heading */
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+        }
+
+        .form-title {
+            color: #1a202c;
+            font-size: 2.5rem;
             font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #2d3748, #4a5568);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
+
+        .form-subtitle {
+            color: #718096;
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
+
         label {
             display: block;
             margin-bottom: 8px;
-            color: #555; /* Medium grey label */
-            font-weight: 400;
+            color: #2d3748;
+            font-weight: 600;
+            font-size: 1rem;
         }
-        input[type="text"],
-        input[type="url"],
+
+        input[type="url"], 
+        input[type="text"], 
         textarea {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc; /* Medium grey border */
-            border-radius: 5px;
-            box-sizing: border-box;
-            font-size: 16px;
-            color: #444;
-            background-color: #fdfdfd;
-            transition: border-color 0.3s ease;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #ffffff;
+            color: #2d3748;
         }
-        input[type="text"]:focus,
-        input[type="url"]:focus,
+
+        input[type="url"]:focus, 
+        input[type="text"]:focus, 
         textarea:focus {
-            border-color: #888; /* Darker grey on focus */
             outline: none;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            border-color: #4a5568;
+            box-shadow: 0 0 0 3px rgba(74, 85, 104, 0.1);
+            transform: translateY(-2px);
         }
+
         textarea {
             resize: vertical;
-            min-height: 100px;
+            min-height: 120px;
         }
-        button {
-            width: 100%;
+
+        .emoji-rating {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .emoji-rating:hover {
+            border-color: #cbd5e0;
+        }
+
+        .emoji-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
             padding: 15px;
-            background-color: #444; /* Dark grey button */
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .emoji-option:hover {
+            background: rgba(74, 85, 104, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .emoji-option input[type="radio"] {
+            display: none;
+        }
+
+        .emoji-icon {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .emoji-label {
+            font-size: 0.9rem;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .emoji-option input[type="radio"]:checked + .emoji-content .emoji-icon {
+            transform: scale(1.2);
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+
+        .emoji-option input[type="radio"]:checked + .emoji-content {
+            background: linear-gradient(135deg, #2d3748, #4a5568);
+            color: white;
+            border-radius: 12px;
+            padding: 10px;
+        }
+
+        .emoji-option input[type="radio"]:checked + .emoji-content .emoji-label {
+            color: white;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
             color: white;
             border: none;
-            border-radius: 5px;
-            font-size: 18px;
-            font-weight: 700;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        button:hover {
-            background-color: #666; /* Lighter grey on hover */
-        }
-        #responseMessage {
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-top: 20px;
-            padding: 10px;
-            border-radius: 5px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(45, 55, 72, 0.3);
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #2d3748, #4a5568);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-top: 20px;
             text-align: center;
-            font-weight: 700;
-            display: none; /* Hidden by default */
+            font-weight: 600;
+            display: none;
+            animation: fadeIn 0.5s ease-out;
         }
-        .success {
-            background-color: #e6ffe6; /* Very light green for success */
-            color: #1a7300; /* Dark green text */
-            border: 1px solid #8cff8c;
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-        .error {
-            background-color: #ffe6e6; /* Very light red for error */
-            color: #cc0000; /* Dark red text */
-            border: 1px solid #ff8c8c;
+
+        .required {
+            color: #e53e3e;
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+
+            .form-title {
+                font-size: 2rem;
+            }
+
+            .emoji-rating {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .emoji-option {
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .emoji-icon {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Inspiración de Contenido</h2>
-        <form id="contentInspirationForm">
+    <div class="form-container">
+        <div class="form-header">
+            <h1 class="form-title">Evaluación de Contenido</h1>
+            <p class="form-subtitle">Comparte tu opinión sobre nuestro contenido</p>
+        </div>
+
+        <form id="contentForm">
             <div class="form-group">
-                <label for="link">Enlace (URL)</label>
-                <input type="url" id="link" name="link" placeholder="Ej: https://ejemplo.com/articulo" required>
+                <label for="contentUrl">URL del Contenido <span class="required">*</span></label>
+                <input 
+                    type="url" 
+                    id="contentUrl" 
+                    name="contentUrl" 
+                    placeholder="https://ejemplo.com/contenido"
+                    required
+                >
             </div>
+
             <div class="form-group">
-                <label for="title">Título</label>
-                <input type="text" id="title" name="title" placeholder="Ej: 5 ideas para tu próxima publicación" required>
+                <label for="postTitle">Título de la Publicación <span class="required">*</span></label>
+                <input 
+                    type="text" 
+                    id="postTitle" 
+                    name="postTitle" 
+                    placeholder="Ingresa el título de la publicación"
+                    required
+                >
             </div>
+
             <div class="form-group">
-                <label for="description">Descripción Rápida</label>
-                <textarea id="description" name="description" placeholder="Ej: Un resumen breve de la idea o el contenido..." required></textarea>
+                <label>Calificación <span class="required">*</span></label>
+                <div class="emoji-rating">
+                    <div class="emoji-option">
+                        <input type="radio" id="rating1" name="rating" value="😢" required>
+                        <label for="rating1" class="emoji-content">
+                            <div class="emoji-icon">😢</div>
+                            <div class="emoji-label">Muy Malo</div>
+                        </label>
+                    </div>
+                    <div class="emoji-option">
+                        <input type="radio" id="rating2" name="rating" value="😕" required>
+                        <label for="rating2" class="emoji-content">
+                            <div class="emoji-icon">😕</div>
+                            <div class="emoji-label">Malo</div>
+                        </label>
+                    </div>
+                    <div class="emoji-option">
+                        <input type="radio" id="rating3" name="rating" value="😐" required>
+                        <label for="rating3" class="emoji-content">
+                            <div class="emoji-icon">😐</div>
+                            <div class="emoji-label">Regular</div>
+                        </label>
+                    </div>
+                    <div class="emoji-option">
+                        <input type="radio" id="rating4" name="rating" value="😊" required>
+                        <label for="rating4" class="emoji-content">
+                            <div class="emoji-icon">😊</div>
+                            <div class="emoji-label">Bueno</div>
+                        </label>
+                    </div>
+                    <div class="emoji-option">
+                        <input type="radio" id="rating5" name="rating" value="😍" required>
+                        <label for="rating5" class="emoji-content">
+                            <div class="emoji-icon">😍</div>
+                            <div class="emoji-label">Excelente</div>
+                        </label>
+                    </div>
+                </div>
             </div>
-            <button type="submit">Enviar Inspiración</button>
-            <div id="responseMessage"></div>
+
+            <div class="form-group">
+                <label for="description">Descripción Breve <span class="required">*</span></label>
+                <textarea 
+                    id="description" 
+                    name="description" 
+                    placeholder="Describe brevemente tu experiencia con este contenido..."
+                    required
+                ></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">Enviar Evaluación</button>
         </form>
+
+        <div id="successMessage" class="success-message">
+            ¡Gracias por tu evaluación! Tu opinión ha sido registrada correctamente.
+        </div>
     </div>
 
     <script>
-        const form = document.getElementById('contentInspirationForm');
-        const responseMessage = document.getElementById('responseMessage');
+        // Google Apps Script integration
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyo_MfNg9AVpWSsfsQG3YzLWPwrxGN5ZuBzCHSxW_qfiuGFRJDf5txsOnhsSrgAVQwN1w/exec';
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Prevent default form submission
+        // Form submission handler
+        document.getElementById('contentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            const submitBtn = document.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Enviando...';
+            submitBtn.disabled = true;
+            
+            // Collect form data
+            const formData = {
+                timestamp: new Date().toISOString(),
+                contentUrl: document.getElementById('contentUrl').value,
+                postTitle: document.getElementById('postTitle').value,
+                rating: document.querySelector('input[name="rating"]:checked').value,
+                description: document.getElementById('description').value
+            };
 
-            const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx7qN2JRaqm6iv2MsPhVq7jvheJA6PNXGegNT-1Ak8twy-9ZPNdrTgHsD--OKpIf6GY/exec'; 
+            // Send to Google Apps Script
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors', // Important for Google Apps Script
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(() => {
+                // Success
+                showSuccess();
+                this.reset();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                showError();
+            })
+            .finally(() => {
+                // Reset button state
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            });
+        });
 
-            const formData = new FormData(form);
-            const data = {};
-            for (let [key, value] of formData.entries()) {
-                data[key] = value;
-            }
+        function showSuccess() {
+            const successMsg = document.getElementById('successMessage');
+            successMsg.style.display = 'block';
+            successMsg.textContent = '¡Gracias por tu evaluación! Tu opinión ha sido registrada correctamente.';
+            
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 3000);
+        }
 
-            // Construct URL-encoded string for sending data
-            const queryString = new URLSearchParams(data).toString();
+        function showError() {
+            const successMsg = document.getElementById('successMessage');
+            successMsg.style.display = 'block';
+            successMsg.style.background = 'linear-gradient(135deg, #e53e3e, #c53030)';
+            successMsg.textContent = 'Error al enviar el formulario. Por favor, inténtalo de nuevo.';
+            
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+                successMsg.style.background = 'linear-gradient(135deg, #2d3748, #4a5568)';
+            }, 3000);
+        }
 
-            // Show a loading message
-            responseMessage.style.display = 'block';
-            responseMessage.className = '';
-            responseMessage.textContent = 'Enviando...';
+        // Add smooth animations to form elements
+        const inputs = document.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-2px)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
 
-            try {
-                // We're now directly using the form's target and action
-                // The 'action' attribute points to the Google Apps Script URL
-                // The 'method' attribute is 'POST'
-                // The Google Apps Script is designed to receive POST requests (doPost)
-
-                // Instead of fetch, we'll directly submit the form to bypass CORS issues for simple data submission
-                // A common pattern is to create a hidden iframe or dynamically set the form's target
-                // However, for direct submission, the simplest way is to let the form itself handle it.
-                // We will temporarily change the form's action and target to submit to the Apps Script.
-
-                const tempForm = document.createElement('form');
-                tempForm.method = 'POST';
-                tempForm.action = GOOGLE_APPS_SCRIPT_URL;
-                tempForm.target = 'hidden_iframe'; // Target a hidden iframe to prevent page refresh
-
-                // Append all form data as hidden inputs to the temporary form
-                for (const key in data) {
-                    if (data.hasOwnProperty(key)) {
-                        const hiddenInput = document.createElement('input');
-                        hiddenInput.type = 'hidden';
-                        hiddenInput.name = key;
-                        hiddenInput.value = data[key];
-                        tempForm.appendChild(hiddenInput);
-                    }
-                }
-
-                document.body.appendChild(tempForm);
-
-                // Create a hidden iframe to catch the form submission response
-                let iframe = document.getElementById('hidden_iframe');
-                if (!iframe) {
-                    iframe = document.createElement('iframe');
-                    iframe.name = 'hidden_iframe';
-                    iframe.id = 'hidden_iframe';
-                    iframe.style.display = 'none';
-                    document.body.appendChild(iframe);
-                }
-
-                iframe.onload = function() {
-                    // This function runs when the iframe loads its content (after form submission)
-                    // Since the Apps Script returns plain text, we can consider the submission successful if no error occurs.
-                    responseMessage.className = 'success';
-                    responseMessage.textContent = '¡Inspiración enviada con éxito!';
-                    form.reset(); // Clear the form
-                    document.body.removeChild(tempForm); // Clean up the temporary form
-                    // No need to remove the iframe, it can be reused.
-                };
-
-                // Submit the temporary form
-                tempForm.submit();
-
-            } catch (error) {
-                console.error('Error submitting form:', error);
-                responseMessage.className = 'error';
-                responseMessage.textContent = 'Error al enviar la inspiración. Intenta de nuevo.';
-                // Clean up in case of a JS error before submission
-                if (document.body.contains(tempForm)) {
-                    document.body.removeChild(tempForm);
-                }
-            } finally {
-                // Hide message after a few seconds
+        // Emoji rating animations
+        const emojiOptions = document.querySelectorAll('.emoji-option');
+        emojiOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Add click animation
+                const icon = this.querySelector('.emoji-icon');
+                icon.style.transform = 'scale(1.3)';
                 setTimeout(() => {
-                    responseMessage.style.display = 'none';
-                }, 5000);
-            }
+                    icon.style.transform = '';
+                }, 200);
+            });
         });
     </script>
 </body>
