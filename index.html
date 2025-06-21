@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inspiración de Contenido</title>
+    <title>Formulario de Evaluación de Contenido</title>
     <style>
         * {
             margin: 0;
@@ -215,6 +215,169 @@
             color: #e53e3e;
         }
 
+        /* Estilos para la sección de evaluaciones previas */
+        .submissions-section {
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: #1a202c;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #2d3748, #4a5568);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            color: #718096;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .load-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #4a5568, #2d3748);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .load-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(74, 85, 104, 0.3);
+        }
+
+        .submissions-list {
+            max-height: 600px;
+            overflow-y: auto;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .submission-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submission-card:hover {
+            border-color: #4a5568;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .submission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .submission-rating {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        .submission-date {
+            font-size: 0.85rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .submission-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .submission-url {
+            display: inline-block;
+            color: #4a5568;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #e2e8f0, #cbd5e0);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .submission-url:hover {
+            background: linear-gradient(135deg, #4a5568, #2d3748);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .submission-description {
+            color: #4a5568;
+            font-size: 1rem;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .loading-message {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+            font-size: 1.1rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .no-submissions {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .submissions-count {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #4a5568;
+            font-weight: 600;
+        }
+
         @media (max-width: 768px) {
             .form-container {
                 padding: 30px 20px;
@@ -244,8 +407,8 @@
 <body>
     <div class="form-container">
         <div class="form-header">
-            <h1 class="form-title">Edificando Hombres</h1>
-            <p class="form-subtitle">Comparte Inspiracion de contenido</p>
+            <h1 class="form-title">Evaluación de Contenido</h1>
+            <p class="form-subtitle">Comparte tu opinión sobre nuestro contenido</p>
         </div>
 
         <form id="contentForm">
@@ -328,11 +491,122 @@
         <div id="successMessage" class="success-message">
             ¡Gracias por tu evaluación! Tu opinión ha sido registrada correctamente.
         </div>
+
+        <!-- Nueva sección para mostrar evaluaciones previas -->
+        <div class="submissions-section">
+            <div class="section-header">
+                <h2 class="section-title">Evaluaciones Previas</h2>
+                <p class="section-subtitle">Descubre lo que otros han compartido</p>
+                <button id="loadSubmissions" class="load-btn">Ver Evaluaciones</button>
+            </div>
+            
+            <div id="submissionsList" class="submissions-list" style="display: none;">
+                <div id="submissionsContent"></div>
+            </div>
+            
+            <div id="loadingMessage" class="loading-message" style="display: none;">
+                Cargando evaluaciones...
+            </div>
+        </div>
     </div>
 
     <script>
         // Google Apps Script integration
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyo_MfNg9AVpWSsfsQG3YzLWPwrxGN5ZuBzCHSxW_qfiuGFRJDf5txsOnhsSrgAVQwN1w/exec';
+
+        // Load submissions functionality
+        document.getElementById('loadSubmissions').addEventListener('click', function() {
+            loadPreviousSubmissions();
+        });
+
+        function loadPreviousSubmissions() {
+            const loadingMsg = document.getElementById('loadingMessage');
+            const submissionsList = document.getElementById('submissionsList');
+            const loadBtn = document.getElementById('loadSubmissions');
+            
+            // Show loading state
+            loadingMsg.style.display = 'block';
+            loadBtn.disabled = true;
+            loadBtn.textContent = 'Cargando...';
+            
+            // Fetch submissions from Google Sheets
+            fetch(SCRIPT_URL + '?action=getSubmissions')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.submissions) {
+                        displaySubmissions(data.submissions);
+                    } else {
+                        showNoSubmissions();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading submissions:', error);
+                    showNoSubmissions();
+                })
+                .finally(() => {
+                    loadingMsg.style.display = 'none';
+                    loadBtn.disabled = false;
+                    loadBtn.textContent = 'Actualizar Evaluaciones';
+                });
+        }
+
+        function displaySubmissions(submissions) {
+            const submissionsList = document.getElementById('submissionsList');
+            const submissionsContent = document.getElementById('submissionsContent');
+            
+            if (submissions.length === 0) {
+                showNoSubmissions();
+                return;
+            }
+            
+            let html = `<div class="submissions-count">${submissions.length} evaluaciones encontradas</div>`;
+            
+            submissions.reverse().forEach(submission => {
+                const date = new Date(submission.timestamp).toLocaleDateString('es-ES', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                html += `
+                    <div class="submission-card">
+                        <div class="submission-header">
+                            <span class="submission-rating">${submission.rating}</span>
+                            <span class="submission-date">${date}</span>
+                        </div>
+                        <h3 class="submission-title">${escapeHtml(submission.postTitle)}</h3>
+                        <a href="${submission.contentUrl}" target="_blank" rel="noopener noreferrer" class="submission-url">
+                            🔗 Ver contenido original
+                        </a>
+                        <p class="submission-description">"${escapeHtml(submission.description)}"</p>
+                    </div>
+                `;
+            });
+            
+            submissionsContent.innerHTML = html;
+            submissionsList.style.display = 'block';
+        }
+
+        function showNoSubmissions() {
+            const submissionsList = document.getElementById('submissionsList');
+            const submissionsContent = document.getElementById('submissionsContent');
+            
+            submissionsContent.innerHTML = `
+                <div class="no-submissions">
+                    No hay evaluaciones disponibles aún.<br>
+                    ¡Sé el primero en compartir tu opinión!
+                </div>
+            `;
+            submissionsList.style.display = 'block';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
 
         // Form submission handler
         document.getElementById('contentForm').addEventListener('submit', function(e) {
@@ -354,21 +628,26 @@
             };
 
             // Send to Google Apps Script
+            console.log('Enviando datos:', formData);
+            
             fetch(SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors', // Important for Google Apps Script
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData)
             })
-            .then(() => {
-                // Success
+            .then(response => {
+                console.log('Respuesta del servidor:', response);
+                return response.text();
+            })
+            .then(data => {
+                console.log('Datos recibidos:', data);
                 showSuccess();
                 this.reset();
             })
             .catch((error) => {
-                console.error('Error:', error);
+                console.error('Error detallado:', error);
                 showError();
             })
             .finally(() => {
