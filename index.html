@@ -381,13 +381,18 @@
             };
             
             try {
-                // Enviar a Google Sheets
+                // Método alternativo usando form data para evitar CORS
+                const formDataToSend = new FormData();
+                formDataToSend.append('url', data.url);
+                formDataToSend.append('title', data.title);
+                formDataToSend.append('description', data.description);
+                formDataToSend.append('rating', data.rating);
+                formDataToSend.append('category', data.category);
+                formDataToSend.append('userIP', data.userIP);
+                
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
+                    body: formDataToSend
                 });
                 
                 const result = await response.json();
