@@ -20,7 +20,7 @@
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.6);
     }
-    h1 {
+    h1, h2 {
       text-align: center;
       color: #f3ad00;
     }
@@ -61,6 +61,33 @@
     .emoji-rating span:hover {
       transform: scale(1.2);
     }
+    .entries {
+      max-width: 600px;
+      margin: 2rem auto;
+    }
+    .entry {
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid #444;
+      padding-bottom: 1rem;
+    }
+    .entry a {
+      color: #f3ad00;
+      text-decoration: none;
+    }
+    .search-box {
+      max-width: 600px;
+      margin: 1rem auto 2rem;
+      text-align: center;
+    }
+    .search-box input {
+      width: 100%;
+      padding: 0.8rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      border: none;
+      background-color: #394150;
+      color: #ffffff;
+    }
   </style>
 </head>
 <body>
@@ -98,10 +125,20 @@
     </form>
   </div>
 
+  <div class="search-box">
+    <input type="text" id="searchBox" placeholder="Search entries...">
+  </div>
+
+  <div class="entries" id="entries">
+    <h2>Previous Entries</h2>
+  </div>
+
   <script>
     const form = document.getElementById("contentForm");
     const ratingInput = document.getElementById("rating");
     const emojis = document.querySelectorAll("#emojiRating span");
+    const searchBox = document.getElementById("searchBox");
+    let allEntries = [];
 
     emojis.forEach((emoji) => {
       emoji.addEventListener("click", () => {
@@ -113,12 +150,11 @@
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-
       const formData = new FormData(form);
       const params = new URLSearchParams(formData);
 
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbyo_MfNg9AVpWSsfsQG3YzLWPwrxGN5ZuBzCHSxW_qfiuGFRJDf5txsOnhsSrgAVQwN1w/exec", {
+        await fetch("https://script.google.com/macros/s/AKfycbyo_MfNg9AVpWSsfsQG3YzLWPwrxGN5ZuBzCHSxW_qfiuGFRJDf5txsOnhsSrgAVQwN1w/exec", {
           method: "POST",
           mode: "no-cors",
           headers: {
@@ -129,11 +165,46 @@
         alert("Submitted successfully!");
         form.reset();
         emojis.forEach((e) => e.style.opacity = "1");
+        loadEntries();
       } catch (error) {
         alert("Error submitting the form.");
         console.error(error);
       }
     });
+
+    async function loadEntries() {
+      try {
+        const response = await fetch("https://opensheet.elk.sh/1Q98nW012Jx1-F8HMFXHdPpqQfqtOxmzsWSo5iCAeGmM/Sheet1");
+        const data = await response.json();
+        allEntries = data.reverse();
+        displayEntries(allEntries);
+      } catch (err) {
+        console.error("Failed to load entries", err);
+      }
+    }
+
+    function displayEntries(entries) {
+      const entriesContainer = document.getElementById("entries");
+      entriesContainer.innerHTML = '<h2>Previous Entries</h2>' + entries.map(entry => `
+        <div class="entry">
+          <strong>${entry.platform}</strong> — <a href="${entry.url}" target="_blank">${entry.title}</a><br>
+          <em>${entry.description}</em><br>
+          <span>Rating: ${['❄️','☃️','⛅','☀️','🔥'][parseInt(entry.rating)-1] || ''}</span>
+        </div>
+      `).join('');
+    }
+
+    searchBox.addEventListener("input", () => {
+      const term = searchBox.value.toLowerCase();
+      const filtered = allEntries.filter(entry => (
+        entry.title?.toLowerCase().includes(term) ||
+        entry.description?.toLowerCase().includes(term) ||
+        entry.platform?.toLowerCase().includes(term)
+      ));
+      displayEntries(filtered);
+    });
+
+    loadEntries();
   </script>
 </body>
 </html>
